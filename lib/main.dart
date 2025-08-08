@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/core/api_service.dart';
 import 'package:stage_app/core/local_storage.dart';
+import 'package:stage_app/core/locator.dart';
 
-import 'presentation/providers/movie_provider.dart';
-import 'presentation/screens/movie_list_page.dart';
+import 'core/connectivity_service.dart';
+import 'presentation/providers/provider.dart';
+import 'utils/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await LocalStorage.init();
+
+  DependencyInjection().setupLocator();
+
+  ConnectivityService().checkConnectivity();
+
   runApp(const MyApp());
 }
 
@@ -21,17 +26,16 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => MovieProvider(ApiService()),
+          create: (context) => MovieProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => FavoriteMoviesProvider(),
+          create: (context) => MovieProvider(),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: routerConfig,
         title: 'Movie App',
-        theme: ThemeData.dark(),
         debugShowCheckedModeBanner: false,
-        home: const MovieListScreen(),
       ),
     );
   }
