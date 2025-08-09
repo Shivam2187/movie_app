@@ -33,7 +33,6 @@ class ErrorScreen extends StatelessWidget {
             ),
             const SizedBox(height: 48),
             ElevatedButton(
-              
               onPressed: onPressed,
               style: const ButtonStyle(),
               child: const Text(MovieConstant.retry),

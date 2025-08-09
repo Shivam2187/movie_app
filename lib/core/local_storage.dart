@@ -10,15 +10,15 @@ class LocalStorage {
     movieBox = await Hive.openBox<Movie>('favorites');
   }
 
-  static List<Movie> getFavorites() {
+  static List<Movie> getBookmark() {
     return movieBox.values.toList();
   }
 
-  static void saveFavorite(Movie movie) {
+  static void saveBookmark(Movie movie) {
     movieBox.put(movie.id, movie);
   }
 
-  static void removeFavorite(int id) {
+  static void removeBookmark(int id) {
     movieBox.delete(id);
   }
 }

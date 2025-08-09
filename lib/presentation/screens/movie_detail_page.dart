@@ -27,9 +27,9 @@ class MovieDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
+            Column(
               children: [
-                Column(
+                Stack(
                   children: [
                     AspectRatio(
                       aspectRatio: 1.75,
@@ -39,43 +39,40 @@ class MovieDetailScreen extends StatelessWidget {
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                           width: double.infinity,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(),
                               )),
                     ),
-                    const SizedBox(
-                      height: 200,
+                    Positioned(
+                      top: 16,
+                      left: 10,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => context.pop(),
+                      ),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 10,
+                      child: IconButton(
+                        icon: const Icon(Icons.share, color: Colors.white),
+                        onPressed: () {},
+                      ),
                     ),
                   ],
                 ),
-                Positioned(
-                  top: 16,
-                  left: 10,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => context.pop(),
-                  ),
-                ),
-                Positioned(
-                  top: 16,
-                  right: 10,
-                  child: IconButton(
-                    icon: const Icon(Icons.share, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: MovieImageWithRating(
-                    movie: movie,
-                  ),
-                )
               ],
             ),
+            MovieImageWithRating(movie: movie),
             const Divider(
               thickness: 2,
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('Movie Overview',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
@@ -103,62 +100,45 @@ class MovieImageWithRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final favoriteProvider = Provider.of<MovieProvider>(context);
+    final movieProvider = Provider.of<MovieProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 200,
-            child: AspectRatio(
-              aspectRatio: .7,
-              child: CachedNetworkImage(
-                  imageUrl:
-                      MovieConstant.baseImageUrl + (movie.posterPath ?? ''),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      )),
+          IconButton(
+            icon: Icon(
+              movieProvider.isBookmark(movie.id)
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color: Colors.red,
+              size: 32,
             ),
+            onPressed: () => movieProvider.toggleBookmark(movie),
           ),
-          const SizedBox(width: 16),
-          Row(
+          const SizedBox(width: 24),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+              Text(
+                movie.title ?? '',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(movie.releaseDate ?? '',
+                  style: const TextStyle(color: Colors.black)),
+              Row(
                 children: [
-                  Text(movie.title ?? '',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  Text(movie.releaseDate ?? '',
+                  Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
                       style: const TextStyle(color: Colors.black)),
-                  Row(
-                    children: [
-                      Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
-                          style: const TextStyle(color: Colors.black)),
-                      const SizedBox(width: 4),
-                      const Icon(Icons.star, size: 20),
-                    ],
-                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.star, size: 20),
                 ],
               ),
-              const SizedBox(width: 24),
-              IconButton(
-                icon: Icon(
-                  favoriteProvider.isFavorite(movie.id)
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Colors.red,
-                  size: 32,
-                ),
-                onPressed: () => favoriteProvider.toggleFavorite(movie),
-              )
             ],
           ),
         ],

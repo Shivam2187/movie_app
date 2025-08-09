@@ -8,13 +8,13 @@ import '../providers/movie_provider.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
-  final bool isFavourite;
+  final bool isBookmark;
   final void Function() onPressed;
 
   const MovieCard({
     super.key,
     required this.movie,
-    required this.isFavourite,
+    required this.isBookmark,
     required this.onPressed,
   });
 
@@ -108,7 +108,7 @@ class MovieCard extends StatelessWidget {
                   IconButton(
                     iconSize: 24,
                     icon: Icon(
-                      isFavourite ? Icons.favorite : Icons.favorite_border,
+                      isBookmark ? Icons.bookmark : Icons.bookmark_border,
                       color: Colors.red,
                     ),
                     onPressed: onPressed,

@@ -83,7 +83,7 @@ class Movie extends HiveObject {
   int? voteCount;
 
   @HiveField(14)
-  bool isFavorite;
+  bool isBookmark;
 
   Movie({
     this.adult,
@@ -100,7 +100,7 @@ class Movie extends HiveObject {
     this.video,
     this.voteAverage,
     this.voteCount,
-    this.isFavorite = false,
+    this.isBookmark = false,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);

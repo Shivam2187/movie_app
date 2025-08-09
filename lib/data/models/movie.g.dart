@@ -74,7 +74,7 @@ class MovieAdapter extends TypeAdapter<Movie> {
       video: fields[11] as bool?,
       voteAverage: fields[12] as double?,
       voteCount: fields[13] as int?,
-      isFavorite: fields[14] as bool,
+      isBookmark: fields[14] as bool,
     );
   }
 
@@ -111,7 +111,7 @@ class MovieAdapter extends TypeAdapter<Movie> {
       ..writeByte(13)
       ..write(obj.voteCount)
       ..writeByte(14)
-      ..write(obj.isFavorite);
+      ..write(obj.isBookmark);
   }
 
   @override
@@ -165,7 +165,7 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       video: json['video'] as bool?,
       voteAverage: (json['vote_average'] as num?)?.toDouble(),
       voteCount: (json['vote_count'] as num?)?.toInt(),
-      isFavorite: json['isFavorite'] as bool? ?? false,
+      isBookmark: json['isFavorite'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
@@ -183,5 +183,5 @@ Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
       'video': instance.video,
       'vote_average': instance.voteAverage,
       'vote_count': instance.voteCount,
-      'isFavorite': instance.isFavorite,
+      'isFavorite': instance.isBookmark,
     };
