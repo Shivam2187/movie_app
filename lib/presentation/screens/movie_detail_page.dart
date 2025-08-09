@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:stage_app/data/models/movie.dart';
 
 import '../../utils/constants.dart';
-import '../providers/provider.dart';
+import '../providers/movie_provider.dart';
 
 class MovieDetailScreen extends StatelessWidget {
   final Movie movie;

@@ -1,26 +1,26 @@
-//import 'package:dio/dio.dart';
-import 'package:dio/dio.dart';
-
-import '../data/models/movie.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:stage_app/data/models/movie.dart';
 
 class ApiService {
-  final Dio _dio = Dio();
-
-  /// Given api is not working so I have used local data
+  /// Fetches popular movies from the TMDB API
   Future<List<Movie>> fetchMovies(String apiKey, String page) async {
-    const url = 'https://api.themoviedb.org/3/movie/popular';
-    try {
-      final response = await _dio.get(
-        url,
-        queryParameters: {
-          'api_key': apiKey,
-          'page': page,
-        },
-      );
-      final List data = response.data['results'];
-      return data.map((json) => Movie.fromJson(json)).toList();
-    } catch (e) {
-      throw Exception("Failed to load movies- ${e.toString()}");
+    final url = 'https://api.themoviedb.org/3/movie/popular?page=$page';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List<dynamic> results = data['results'];
+      return results.map((json) => Movie.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load movies');
     }
   }
 }

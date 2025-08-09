@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-import '../presentation/providers/provider.dart';
+import '../presentation/providers/movie_provider.dart';
 
 class ConnectivityService {
   static final ConnectivityService _instance = ConnectivityService._internal();

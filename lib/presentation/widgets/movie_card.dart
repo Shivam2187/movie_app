@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stage_app/data/models/movie.dart';
 
 import '../../utils/constants.dart';
-import '../providers/provider.dart';
+import '../providers/movie_provider.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;

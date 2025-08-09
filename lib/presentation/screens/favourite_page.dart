@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:stage_app/presentation/widgets/movie_card.dart';
 import 'package:stage_app/utils/constants.dart';
 
-import '../providers/provider.dart';
+import '../providers/movie_provider.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({

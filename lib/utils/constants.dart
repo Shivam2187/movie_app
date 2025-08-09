@@ -10,7 +10,8 @@ class MovieConstant {
   static const failedtoload = 'Failed to load movies';
   static const trailers = 'Trailers';
   static const errorScreenTitle = 'Error Screen';
-  static const somethingWentWrong = 'Something Went Wrong';
+  static const somethingWentWrong =
+      'Something Went Wrong While fetching Movies';
 
   static const favouriteMovies = 'Favourite Movies';
   static const noFavouriteMovies = 'Oops! Couldn\'t find any favorites...';

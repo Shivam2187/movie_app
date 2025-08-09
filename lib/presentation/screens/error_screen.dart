@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../utils/constants.dart';
 
 class ErrorScreen extends StatelessWidget {
-  const ErrorScreen({super.key});
+  const ErrorScreen({
+    super.key,
+    this.onPressed,
+  });
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(MovieConstant.errorScreenTitle)),
+      // appBar: AppBar(title: const Text(MovieConstant.errorScreenTitle)),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -21,17 +24,17 @@ class ErrorScreen extends StatelessWidget {
               color: Colors.red,
             ),
             const SizedBox(height: 24),
-            const Center(
-              child: Text(
-                MovieConstant.somethingWentWrong,
-                style: TextStyle(fontSize: 18),
+            const Text(
+              MovieConstant.somethingWentWrong,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 48),
             ElevatedButton(
-              onPressed: () {
-                context.pop(true);
-              },
+              
+              onPressed: onPressed,
               style: const ButtonStyle(),
               child: const Text(MovieConstant.retry),
             ),
