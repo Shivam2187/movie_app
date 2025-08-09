@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:stage_app/presentation/screens/bookmark_page.dart';
 import 'package:stage_app/presentation/screens/favourite_page.dart';
+import 'package:stage_app/utils/constants.dart';
 
 import '../data/models/movie.dart';
 import '../presentation/screens/error_screen.dart';
@@ -16,22 +18,27 @@ final routerConfig = GoRouter(
       builder: (context, state) => const MovieListScreen(),
     ),
     GoRoute(
-      name: 'shope',
-      path: '/movieDetailsScreen',
+      name: 'Movie Details Screen',
+      path: NavigationPaths.movieDetailsScreen,
       builder: (context, state) {
         final movie = state.extra as Movie;
         return MovieDetailScreen(movie: movie);
       },
     ),
     GoRoute(
-      name: 'favouriteScreen',
-      path: '/favouriteScreen',
+      name: 'FavouriteScreen',
+      path: NavigationPaths.favouriteScreen,
       builder: (context, state) => const FavouriteScreen(),
     ),
     GoRoute(
       name: 'errorScreen',
-      path: '/errorScreen',
+      path: NavigationPaths.errorScreen,
       builder: (context, state) => const ErrorScreen(),
+    ),
+    GoRoute(
+      name: 'BookmarkPage',
+      path: NavigationPaths.bookmarkPage,
+      builder: (context, state) => const BookmarkPage(),
     ),
   ],
 );

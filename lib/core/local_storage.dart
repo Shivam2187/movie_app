@@ -11,14 +11,50 @@ class LocalStorage {
   }
 
   static List<Movie> getBookmark() {
+    final totalMovies = movieBox.values.toList();
+    List<Movie> resultList = [];
+
+    for (int i = 0; i < totalMovies.length; i++) {
+      if (totalMovies[i].isBookmark) {
+        resultList.add(totalMovies[i]);
+      }
+    }
+
+    return resultList;
+  }
+
+  static Future<void> saveBookmark(int id) async {
+    if (movieBox.containsKey(id)) {
+      final currentMovie = movieBox.get(id);
+      final updatedMovie = currentMovie!.copyWith(isBookmark: true);
+      await movieBox.put(id, updatedMovie); // Overwrites the old movie
+    }
+  }
+
+  static Future<void> removeBookmark(int id) async {
+    if (movieBox.containsKey(id)) {
+      final currentMovie = movieBox.get(id);
+      final updatedMovie = currentMovie!.copyWith(isBookmark: false);
+      await movieBox.put(id, updatedMovie); // Overwrites the old movie
+    }
+  }
+
+  // Add multiple movies at once
+  static Future<void> addAllMovies(List<Movie> movies) async {
+    for (final movie in movies) {
+      if (!movieBox.containsKey(movie.id)) {
+        await movieBox.put(movie.id, movie);
+      }
+    }
+  }
+
+  // Get All movies at once
+  static List<Movie> getAllMovies() {
     return movieBox.values.toList();
   }
 
-  static void saveBookmark(Movie movie) {
-    movieBox.put(movie.id, movie);
-  }
-
-  static void removeBookmark(int id) {
-    movieBox.delete(id);
+  static bool isBookmark(int id) {
+    final movie = movieBox.get(id);
+    return movie?.isBookmark ?? false;
   }
 }

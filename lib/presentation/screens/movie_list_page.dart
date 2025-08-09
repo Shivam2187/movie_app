@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/presentation/screens/error_screen.dart';
 import 'package:stage_app/presentation/widgets/appbar.dart' show buildAppBar;
@@ -7,7 +8,6 @@ import '../../core/connectivity_service.dart';
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';
 import '../widgets/movie_card.dart';
-import 'favourite_page.dart';
 
 class MovieListScreen extends StatefulWidget {
   const MovieListScreen({
@@ -19,7 +19,6 @@ class MovieListScreen extends StatefulWidget {
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
-  bool showFavorites = false;
   late ScrollController _controller;
 
   @override
@@ -54,76 +53,64 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MovieProvider>(
-      builder: (context, movieProvider, child) {
-        return ValueListenableBuilder<bool?>(
-          valueListenable: isNetworkAvailable,
-          builder: (context, hasError, child) {
-            if (needToShowNetworkSnackBar) {
-              internetStatusSnackbar();
-            }
+    return ValueListenableBuilder<bool?>(
+      valueListenable: isNetworkAvailable,
+      builder: (context, hasError, child) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: buildAppBar(
+            context: context,
+            title: MovieConstant.movieScreenAppbarTiltle,
+          ),
+          body: Consumer<MovieProvider>(
+            builder: (context, movieProvider, child) {
+              if (needToShowNetworkSnackBar) {
+                internetStatusSnackbar();
+              }
 
-            if (isNetworkAvailable.value == false) {
-              return const FavouriteScreen();
-            }
-            // Api error handling
-            if (movieProvider.hasError) {
-              return ErrorScreen(
-                onPressed: () {
-                  movieProvider.fetchMovies();
-                },
-              );
-            } else if (movieProvider.isLoading) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            return Scaffold(
-              backgroundColor: Colors.white,
-              appBar: buildAppBar(
-                context: context,
-                title: MovieConstant.movieScreenAppbarTiltle,
-                showFavorites: showFavorites,
-                onChanged: (value) {
-                  setState(() {
-                    showFavorites = value;
-                  });
-                },
-              ),
-              body: Column(
+              // if (isNetworkAvailable.value == false) {
+              //   return const Center(
+              //     child: Text(
+              //       'You are Offline!',
+              //       style: TextStyle(
+              //         fontSize: 20,
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              //     ),
+              //   );
+              // }
+              // Api error handling
+              if (movieProvider.hasError) {
+                return ErrorScreen(
+                  onPressed: () {
+                    movieProvider.fetchMovies();
+                  },
+                );
+              } else if (movieProvider.isLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
                       decoration: _textFieldDecoration(),
                       onChanged: movieProvider.setSearchQuery,
+                      initialValue: movieProvider.getSearchQuery,
                     ),
                   ),
-                  if (showFavorites && movieProvider.bookmarkMovies.isEmpty)
-                    const Expanded(
+                  if (movieProvider.getMovies.isEmpty)
+                    Expanded(
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           child: Text(
-                            MovieConstant.noFavouriteMovies,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  if (movieProvider.movies.isEmpty && !showFavorites)
-                    const Expanded(
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Text(
-                            MovieConstant.notMatchingWithSearch,
-                            style: TextStyle(
+                            movieProvider.getSearchQuery.isEmpty
+                                ? MovieConstant.notMovieToDisplay
+                                : '${MovieConstant.notMatchingWithSearch} ${movieProvider.getSearchQuery}',
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -138,31 +125,40 @@ class _MovieListScreenState extends State<MovieListScreen> {
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: const EdgeInsets.all(8.0),
-                      itemCount: showFavorites
-                          ? movieProvider.bookmarkMovies.length
-                          : movieProvider.movies.length,
+                      itemCount: movieProvider.getMovies.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.6,
                       ),
                       itemBuilder: (context, index) {
-                        final movie = showFavorites
-                            ? movieProvider.bookmarkMovies[index]
-                            : movieProvider.movies[index];
+                        final movie = movieProvider.getMovies[index];
 
                         return MovieCard(
                           movie: movie,
-                          isBookmark: movieProvider.isBookmark(movie.id),
                           onPressed: () => movieProvider.toggleBookmark(movie),
                         );
                       },
                     ),
                   ),
                 ],
-              ),
-            );
-          },
+              );
+            },
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              context.push(NavigationPaths.bookmarkPage);
+            },
+            icon: const Icon(
+              Icons.bookmark,
+              color: Colors.white,
+            ),
+            label: const Text(
+              'Saved Movies',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.blue,
+          ),
         );
       },
     );

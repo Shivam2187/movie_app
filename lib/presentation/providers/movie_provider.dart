@@ -17,20 +17,22 @@ class MovieProvider with ChangeNotifier {
   MovieProvider();
 
   final ApiService apiService = locator.get<ApiService>();
-  final List<Movie> _totalLoadedMovies = [];
-  List<Movie> get getTotalLoadedMovies => _totalLoadedMovies;
-  String _searchQuery = '';
 
-  List<Movie> _bookmarkMovies = LocalStorage.getBookmark();
+  /// Get Data form Local DB
+  List<Movie> get _getTotalLoadedMovies => LocalStorage.getAllMovies();
+  String _searchQuery = '';
+  String get getSearchQuery => _searchQuery;
+
+  final List<Movie> _bookmarkMovies = LocalStorage.getBookmark();
 
   bool isLoading = false;
   bool hasError = false;
 
   String currentPageNumber = '1';
 
-  List<Movie> get movies => _searchQuery.isEmpty
-      ? _totalLoadedMovies
-      : _totalLoadedMovies.where(
+  List<Movie> get getMovies => _searchQuery.isEmpty
+      ? _getTotalLoadedMovies
+      : _getTotalLoadedMovies.where(
           (movie) {
             if (movie.title == null) {
               return false;
@@ -41,7 +43,7 @@ class MovieProvider with ChangeNotifier {
           },
         ).toList();
 
-  List<Movie> get bookmarkMovies => _bookmarkMovies.where(
+  List<Movie> get getBookmarkMovies => _bookmarkMovies.where(
         (movie) {
           if (movie.title == null) {
             return false;
@@ -58,21 +60,18 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Adding and removing movie from Bookmark list
-  void toggleBookmark(Movie movie) {
-    movie.isBookmark = !movie.isBookmark;
+  Future<void> toggleBookmark(Movie movie) async {
     if (movie.isBookmark) {
-      LocalStorage.saveBookmark(movie);
-      _bookmarkMovies = [..._bookmarkMovies, movie];
+      await LocalStorage.removeBookmark(movie.id);
     } else {
-      LocalStorage.removeBookmark(movie.id);
-      _bookmarkMovies = _bookmarkMovies.where((m) => m.id != movie.id).toList();
+      await LocalStorage.saveBookmark(movie.id);
     }
     notifyListeners();
   }
 
   /// Used to check current movie is present in Bookmark list
   bool isBookmark(int movieId) {
-    return _bookmarkMovies.any((movie) => movie.id == movieId);
+    return LocalStorage.isBookmark(movieId);
   }
 
   /// Pagination Logic :-
@@ -89,7 +88,7 @@ class MovieProvider with ChangeNotifier {
           await apiService.fetchMovies(MovieConstant.apiKey, currentPageNumber);
 
       if (currentMovie.isListNotEmptyOrNull()) {
-        _totalLoadedMovies.addAll(currentMovie!);
+        await LocalStorage.addAllMovies(currentMovie!);
       }
 
       currentPageNumber =

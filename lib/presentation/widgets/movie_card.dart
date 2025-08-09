@@ -8,13 +8,12 @@ import '../providers/movie_provider.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
-  final bool isBookmark;
+
   final void Function() onPressed;
 
   const MovieCard({
     super.key,
     required this.movie,
-    required this.isBookmark,
     required this.onPressed,
   });
 
@@ -23,9 +22,9 @@ class MovieCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        if (isNetworkAvailable.value ?? false) {
+        
           context.push(NavigationPaths.movieDetailsScreen, extra: movie);
-        } else {
+         if (!(isNetworkAvailable.value ?? false)) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(MovieConstant.noInternetConnection),
@@ -33,7 +32,8 @@ class MovieCard extends StatelessWidget {
               duration: Duration(seconds: 2),
             ),
           );
-        }
+         }
+         
       },
       child: Card(
         elevation: 4,
@@ -43,14 +43,18 @@ class MovieCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(8)),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      MovieConstant.baseImageUrl + (movie.posterPath ?? ''),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
+                child: Hero(
+                  tag: movie.id,
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        MovieConstant.baseImageUrl + (movie.posterPath ?? ''),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 ),
               ),
@@ -108,7 +112,7 @@ class MovieCard extends StatelessWidget {
                   IconButton(
                     iconSize: 24,
                     icon: Icon(
-                      isBookmark ? Icons.bookmark : Icons.bookmark_border,
+                      movie.isBookmark ? Icons.bookmark : Icons.bookmark_border,
                       color: Colors.red,
                     ),
                     onPressed: onPressed,

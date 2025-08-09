@@ -4,6 +4,7 @@ class NavigationPaths {
   static const errorScreen = '/errorScreen';
   static const favouriteScreen = '/favouriteScreen';
   static const movieDetailsScreen = '/movieDetailsScreen';
+  static const bookmarkPage = '/bookmarkPage';
 }
 
 class MovieConstant {
@@ -21,7 +22,8 @@ class MovieConstant {
   static const retry = 'Retry';
   static const backOnline = 'Back online';
   static const notMatchingWithSearch =
-      'Oops! We couldn\'t find anything for that search....';
+      'Oops! We couldn\'t find anything for search';
+  static const notMovieToDisplay = 'Oops! No Movie To Display';
 
   static const ratingText = 'Rating : ';
   static const apiKey = '8109e1095288aec7bfe2b22f2f41c63e';

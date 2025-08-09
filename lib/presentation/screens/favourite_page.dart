@@ -17,23 +17,22 @@ class FavouriteScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: favoriteProvider.bookmarkMovies.isNotEmpty
+      body: favoriteProvider.getBookmarkMovies.isNotEmpty
           ? Column(
               children: [
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    itemCount: favoriteProvider.bookmarkMovies.length,
+                    itemCount: favoriteProvider.getBookmarkMovies.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.6,
                     ),
                     itemBuilder: (context, index) {
-                      final movie = favoriteProvider.bookmarkMovies[index];
+                      final movie = favoriteProvider.getBookmarkMovies[index];
                       return MovieCard(
                         movie: movie,
-                        isBookmark: favoriteProvider.isBookmark(movie.id),
                         onPressed: () => favoriteProvider.toggleBookmark(movie),
                       );
                     },

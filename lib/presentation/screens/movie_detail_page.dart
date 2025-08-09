@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/data/models/movie.dart';
+import 'package:stage_app/presentation/widgets/appbar.dart';
 
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';
@@ -18,9 +19,10 @@ class MovieDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 12,
-        backgroundColor: Colors.blue,
+      appBar: buildAppBar(
+        title: movie.title ?? 'Movie Details',
+        context: context,
+        showBackButton: false,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -33,7 +35,9 @@ class MovieDetailScreen extends StatelessWidget {
                   children: [
                     AspectRatio(
                       aspectRatio: 1.75,
-                      child: CachedNetworkImage(
+                      child: Hero(
+                        tag: movie.id,
+                        child: CachedNetworkImage(
                           imageUrl: MovieConstant.baseImageUrl +
                               (movie.backdropPath ?? ''),
                           errorWidget: (context, url, error) =>
@@ -41,8 +45,10 @@ class MovieDetailScreen extends StatelessWidget {
                           width: double.infinity,
                           fit: BoxFit.fill,
                           placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(),
-                              )),
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
                     ),
                     Positioned(
                       top: 16,
@@ -68,24 +74,36 @@ class MovieDetailScreen extends StatelessWidget {
             const Divider(
               thickness: 2,
             ),
+            const SizedBox(height: 16),
             const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Movie Overview',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Movie Overview',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
+            const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(movie.overview ?? '',
                   style: const TextStyle(color: Colors.black)),
             ),
             const Divider(
               thickness: 2,
             ),
+            const SizedBox(height: 16),
             const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(MovieConstant.trailers,
-                  style: TextStyle(color: Colors.red, fontSize: 20)),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                MovieConstant.trailers,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 20,
+                ),
+              ),
             )
           ],
         ),
@@ -96,53 +114,58 @@ class MovieDetailScreen extends StatelessWidget {
 
 class MovieImageWithRating extends StatelessWidget {
   final Movie movie;
-  const MovieImageWithRating({super.key, required this.movie});
+  const MovieImageWithRating({
+    super.key,
+    required this.movie,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final movieProvider = Provider.of<MovieProvider>(context);
+     
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            icon: Icon(
-              movieProvider.isBookmark(movie.id)
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
-              color: Colors.red,
-              size: 32,
-            ),
-            onPressed: () => movieProvider.toggleBookmark(movie),
-          ),
-          const SizedBox(width: 24),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+    return Consumer<MovieProvider>(
+      builder: (context, provider, child)  {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                movie.title ?? '',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
+              IconButton(
+                icon: Icon(
+                  provider.isBookmark(movie.id) ? Icons.bookmark : Icons.bookmark_border,
+                  color: Colors.red,
+                  size: 32,
                 ),
+                onPressed: () => provider.toggleBookmark(movie),
               ),
-              Text(movie.releaseDate ?? '',
-                  style: const TextStyle(color: Colors.black)),
-              Row(
+              const SizedBox(width: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
+                  Text(
+                    movie.title ?? '',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(movie.releaseDate ?? '',
                       style: const TextStyle(color: Colors.black)),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.star, size: 20),
+                  Row(
+                    children: [
+                      Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
+                          style: const TextStyle(color: Colors.black)),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.star, size: 20),
+                    ],
+                  ),
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      }
     );
   }
 }
