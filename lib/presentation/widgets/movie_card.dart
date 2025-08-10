@@ -22,9 +22,9 @@ class MovieCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        
-          context.push(NavigationPaths.movieDetailsScreen, extra: movie);
-         if (!(isNetworkAvailable.value ?? false)) {
+
+        context.push(NavigationPaths.movieDetailsScreen, extra: movie);
+        if (!(isNetworkAvailable.value ?? false)) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(MovieConstant.noInternetConnection),
@@ -32,8 +32,7 @@ class MovieCard extends StatelessWidget {
               duration: Duration(seconds: 2),
             ),
           );
-         }
-         
+        }
       },
       child: Card(
         elevation: 4,

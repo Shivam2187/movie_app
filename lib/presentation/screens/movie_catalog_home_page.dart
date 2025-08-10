@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/presentation/screens/error_screen.dart';
+import 'package:stage_app/presentation/screens/error_page.dart';
 import 'package:stage_app/presentation/widgets/appbar.dart' show buildAppBar;
 
 import '../../core/connectivity_service.dart';
@@ -9,16 +9,16 @@ import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';
 import '../widgets/movie_card.dart';
 
-class MovieListScreen extends StatefulWidget {
-  const MovieListScreen({
+class MovieCatalogHomePage extends StatefulWidget {
+  const MovieCatalogHomePage({
     super.key,
   });
 
   @override
-  State<MovieListScreen> createState() => _MovieListScreenState();
+  State<MovieCatalogHomePage> createState() => _MovieCatalogHomePageState();
 }
 
-class _MovieListScreenState extends State<MovieListScreen> {
+class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
   late ScrollController _controller;
 
   @override
@@ -40,6 +40,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
         ConnectivityService().startListening();
         final provider = Provider.of<MovieProvider>(context, listen: false);
         await provider.fetchMovies();
+        provider.setSearchQuery('');
         _controller.addListener(() {
           if (_controller.position.pixels ==
                   _controller.position.maxScrollExtent &&
@@ -81,7 +82,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
               // }
               // Api error handling
               if (movieProvider.hasError) {
-                return ErrorScreen(
+                return ErrorPage(
                   onPressed: () {
                     movieProvider.fetchMovies();
                   },
@@ -93,12 +94,22 @@ class _MovieListScreenState extends State<MovieListScreen> {
               }
               return Column(
                 children: [
+                  /// Search bar
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      decoration: _textFieldDecoration(),
-                      onChanged: movieProvider.setSearchQuery,
-                      initialValue: movieProvider.getSearchQuery,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(NavigationPaths.debouncedSearchedMoies);
+                      },
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: TextEditingController(
+                            text: movieProvider.getSearchQuery,
+                          ),
+                          decoration: _textFieldDecoration(),
+                          onChanged: movieProvider.setSearchQuery,
+                        ),
+                      ),
                     ),
                   ),
                   if (movieProvider.getMovies.isEmpty)

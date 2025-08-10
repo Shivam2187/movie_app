@@ -5,11 +5,12 @@ class NavigationPaths {
   static const favouriteScreen = '/favouriteScreen';
   static const movieDetailsScreen = '/movieDetailsScreen';
   static const bookmarkPage = '/bookmarkPage';
+  static const debouncedSearchedMoies = '/debouncedSearchedMoies';
 }
 
 class MovieConstant {
   static const movieScreenAppbarTiltle = 'Movies';
-  static const searchMoviesHintText = 'Search movies...';
+  static const searchMoviesHintText = 'Network Search movies...';
   static const failedtoload = 'Failed to load movies';
   static const trailers = 'Trailers';
   static const errorScreenTitle = 'Error Screen';

@@ -5,10 +5,30 @@ import 'package:provider/provider.dart';
 import 'package:stage_app/presentation/widgets/movie_card.dart';
 import 'package:stage_app/utils/constants.dart';
 
-class BookmarkPage extends StatelessWidget {
+class BookmarkPage extends StatefulWidget {
   const BookmarkPage({
     super.key,
   });
+
+  @override
+  State<BookmarkPage> createState() => _BookmarkPageState();
+}
+
+class _BookmarkPageState extends State<BookmarkPage> {
+  @override
+  void initState() {
+    super.initState();
+    inIt();
+  }
+
+  void inIt() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        final provider = Provider.of<MovieProvider>(context, listen: false);
+        provider.setBookmarkSearchQuery('');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +47,10 @@ class BookmarkPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  controller: TextEditingController(
+                      text: provider.getBookmarkSearchQuery),
                   decoration: _textFieldDecoration(),
-                  onChanged: provider.setSearchQuery,
-                  initialValue: provider.getSearchQuery,
+                  onChanged: provider.setBookmarkSearchQuery,
                 ),
               ),
               if (bookmarkMovies.isEmpty)
@@ -38,9 +59,9 @@ class BookmarkPage extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Center(
                       child: Text(
-                        provider.getSearchQuery.isEmpty
+                        provider.getBookmarkSearchQuery.isEmpty
                             ? 'No Bookmarks Available'
-                            : '${MovieConstant.notMatchingWithSearch} ${provider.getSearchQuery} ',
+                            : '${MovieConstant.notMatchingWithSearch} ${provider.getBookmarkSearchQuery} ',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../utils/constants.dart';
 
-class ErrorScreen extends StatelessWidget {
-  const ErrorScreen({
+class ErrorPage extends StatelessWidget {
+  const ErrorPage({
     super.key,
     this.onPressed,
   });

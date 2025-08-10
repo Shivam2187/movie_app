@@ -1,21 +1,22 @@
 import 'package:go_router/go_router.dart';
 import 'package:stage_app/presentation/screens/bookmark_page.dart';
+import 'package:stage_app/presentation/screens/debounced_searched_moies.dart'
+    show DebouncedSearchedMoies;
 import 'package:stage_app/presentation/screens/favourite_page.dart';
 import 'package:stage_app/utils/constants.dart';
 
 import '../data/models/movie.dart';
-import '../presentation/screens/error_screen.dart';
+import '../presentation/screens/error_page.dart';
 import '../presentation/screens/movie_detail_page.dart';
-import '../presentation/screens/movie_list_page.dart';
+import '../presentation/screens/movie_catalog_home_page.dart';
 
-final routerConfig = GoRouter(
+final routeConfig = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
-      name:
-          'home', // Optional, add name to your routes. Allows you navigate by name instead of path
+      name: 'home',
       path: '/',
-      builder: (context, state) => const MovieListScreen(),
+      builder: (context, state) => const MovieCatalogHomePage(),
     ),
     GoRoute(
       name: 'Movie Details Screen',
@@ -33,12 +34,17 @@ final routerConfig = GoRouter(
     GoRoute(
       name: 'errorScreen',
       path: NavigationPaths.errorScreen,
-      builder: (context, state) => const ErrorScreen(),
+      builder: (context, state) => const ErrorPage(),
     ),
     GoRoute(
       name: 'BookmarkPage',
       path: NavigationPaths.bookmarkPage,
       builder: (context, state) => const BookmarkPage(),
+    ),
+    GoRoute(
+      name: 'DebouncedSearchedMoies',
+      path: NavigationPaths.debouncedSearchedMoies,
+      builder: (context, state) => const DebouncedSearchedMoies(),
     ),
   ],
 );

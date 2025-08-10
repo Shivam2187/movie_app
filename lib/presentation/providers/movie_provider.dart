@@ -23,10 +23,20 @@ class MovieProvider with ChangeNotifier {
   String _searchQuery = '';
   String get getSearchQuery => _searchQuery;
 
-  final List<Movie> _bookmarkMovies = LocalStorage.getBookmark();
+  String _bookmarkSearchQuery = '';
+  String get getBookmarkSearchQuery => _bookmarkSearchQuery;
+
+  String _debouncedSearchQuery = '';
+  String get getDebouncedSearchQuery => _debouncedSearchQuery;
+  final List<Movie> _totalDebouncedMovies = [];
+  List<Movie> get getTotalDebouncedMovies => _totalDebouncedMovies;
+  String debouncedCurrentPageNumber = '1';
+
+  List<Movie> get _bookmarkMovies => LocalStorage.getBookmark();
 
   bool isLoading = false;
   bool hasError = false;
+  bool _hasMore = true;
 
   String currentPageNumber = '1';
 
@@ -50,12 +60,22 @@ class MovieProvider with ChangeNotifier {
           }
           return movie.title!
               .toLowerCase()
-              .contains(_searchQuery.toLowerCase());
+              .contains(_bookmarkSearchQuery.toLowerCase());
         },
       ).toList();
 
   void setSearchQuery(String query) {
     _searchQuery = query.trim();
+    notifyListeners();
+  }
+
+  void setDebouncedSearchQuery(String query) {
+    _debouncedSearchQuery = query.trim();
+    notifyListeners();
+  }
+
+  void setBookmarkSearchQuery(String query) {
+    _bookmarkSearchQuery = query.trim();
     notifyListeners();
   }
 
@@ -99,6 +119,37 @@ class MovieProvider with ChangeNotifier {
     }
 
     isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchDebouncedSearchMovies({
+    bool reset = false,
+  }) async {
+    if (reset) {
+      debouncedCurrentPageNumber = '1';
+      _totalDebouncedMovies.clear();
+      notifyListeners();
+    }
+
+    if (!_hasMore) return;
+
+    try {
+      final currentMovie = await apiService.fetchMovies(
+          MovieConstant.apiKey, debouncedCurrentPageNumber);
+
+      if (currentMovie != null && currentMovie.isEmpty) {
+        _hasMore = false;
+      } else if (currentMovie.isListEmptyOrNull()) {
+        _totalDebouncedMovies.addAll(currentMovie!);
+      }
+
+      debouncedCurrentPageNumber =
+          ((int.tryParse(debouncedCurrentPageNumber) ?? 0) + 1).toString();
+    } catch (e) {
+      hasError = true;
+      print(e.toString());
+    }
+
     notifyListeners();
   }
 }

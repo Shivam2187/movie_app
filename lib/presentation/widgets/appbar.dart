@@ -13,7 +13,7 @@ AppBar buildAppBar({
     ),
     backgroundColor: Colors.blue,
     actions: [],
-     automaticallyImplyLeading: showBackButton,
+    automaticallyImplyLeading: showBackButton,
     // leading: IconButton(
     //   onPressed: () {},
     //   icon: const Icon(Icons.menu, color: Colors.white),

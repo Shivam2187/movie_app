@@ -5,7 +5,7 @@ import 'package:stage_app/core/locator.dart';
 
 import 'core/connectivity_service.dart';
 import 'presentation/providers/movie_provider.dart';
-import 'utils/app_router.dart';
+import 'core/route_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        routerConfig: routerConfig,
+        routerConfig: routeConfig,
         title: 'Movie App',
         debugShowCheckedModeBanner: false,
       ),

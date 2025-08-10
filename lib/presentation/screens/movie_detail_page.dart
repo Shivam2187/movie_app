@@ -121,51 +121,49 @@ class MovieImageWithRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     
-
-    return Consumer<MovieProvider>(
-      builder: (context, provider, child)  {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(
-                  provider.isBookmark(movie.id) ? Icons.bookmark : Icons.bookmark_border,
-                  color: Colors.red,
-                  size: 32,
+    return Consumer<MovieProvider>(builder: (context, provider, child) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(
+                provider.isBookmark(movie.id)
+                    ? Icons.bookmark
+                    : Icons.bookmark_border,
+                color: Colors.red,
+                size: 32,
+              ),
+              onPressed: () => provider.toggleBookmark(movie),
+            ),
+            const SizedBox(width: 24),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  movie.title ?? '',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                onPressed: () => provider.toggleBookmark(movie),
-              ),
-              const SizedBox(width: 24),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    movie.title ?? '',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(movie.releaseDate ?? '',
-                      style: const TextStyle(color: Colors.black)),
-                  Row(
-                    children: [
-                      Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
-                          style: const TextStyle(color: Colors.black)),
-                      const SizedBox(width: 4),
-                      const Icon(Icons.star, size: 20),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      }
-    );
+                Text(movie.releaseDate ?? '',
+                    style: const TextStyle(color: Colors.black)),
+                Row(
+                  children: [
+                    Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
+                        style: const TextStyle(color: Colors.black)),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.star, size: 20),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
