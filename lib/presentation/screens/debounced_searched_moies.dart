@@ -17,6 +17,7 @@ class DebouncedSearchedMoies extends StatefulWidget {
 
 class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
   late ScrollController _controller;
+  final TextEditingController _textController = TextEditingController();
 
   Timer? _debounce;
   bool isDebounceSearchActive = false;
@@ -33,6 +34,7 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         final provider = Provider.of<MovieProvider>(context, listen: false);
+        _textController.text = provider.getDebouncedSearchQuery;
         provider.setDebouncedSearchQuery('');
         _controller.addListener(() {
           if (_controller.position.pixels ==
@@ -76,9 +78,7 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
-                  controller: TextEditingController(
-                    text: movieProvider.getDebouncedSearchQuery,
-                  ),
+                  controller: _textController,
                   decoration: _textFieldDecoration(),
                   onChanged: (value) {
                     movieProvider.setDebouncedSearchQuery(value);

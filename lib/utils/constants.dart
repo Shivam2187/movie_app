@@ -27,7 +27,6 @@ class MovieConstant {
   static const notMovieToDisplay = 'Oops! No Movie To Display';
 
   static const ratingText = 'Rating : ';
-  static const apiKey = '8109e1095288aec7bfe2b22f2f41c63e';
 
   static const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
 

@@ -1,22 +1,25 @@
 // ignore_for_file: avoid_print
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:stage_app/core/api_service.dart';
 import 'package:stage_app/data/models/movie.dart';
 import 'package:stage_app/utils/constants.dart';
 
 import '../../core/local_storage.dart';
-import '../../core/locator.dart';
 
 ValueNotifier<bool?> isNetworkAvailable = ValueNotifier<bool?>(null);
 bool isBackOnlineEnable = false;
 bool needToShowNetworkSnackBar = true;
 
 class MovieProvider with ChangeNotifier {
-  MovieProvider();
-
-  final ApiService apiService = locator.get<ApiService>();
+  late final ApiService apiService;
+  MovieProvider() {
+    final dio = Dio()..options.headers['accept'] = 'application/json';
+    apiService = ApiService(dio);
+  }
 
   /// Get Data form Local DB
   List<Movie> get _getTotalLoadedMovies => LocalStorage.getAllMovies();
@@ -95,20 +98,29 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Pagination Logic :-
-  /// Used for fetch movies with two diffrent condition 1st for just
-  /// fetch movies and stored in cache for future use and
-  /// 2nd for just fetch and show to the screen
+
   Future<void> fetchMovies() async {
     isLoading = true;
     hasError = false;
     notifyListeners();
 
     try {
-      final currentMovie =
-          await apiService.fetchMovies(MovieConstant.apiKey, currentPageNumber);
+      final apiKey = dotenv.env['TMDB_API_READ_KEY'];
 
-      if (currentMovie.isListNotEmptyOrNull()) {
-        await LocalStorage.addAllMovies(currentMovie!);
+      if (apiKey == null) return;
+
+      final response = await apiService.fetchMovies(
+        'Bearer $apiKey',
+        currentPageNumber,
+        'en-US',
+      );
+
+      final data = response.data;
+      final movieResponse = MovieResponse.fromJson(data);
+      final currentPageMovie = movieResponse.results;
+
+      if (currentPageMovie.isListNotEmptyOrNull()) {
+        await LocalStorage.addAllMovies(currentPageMovie);
       }
 
       currentPageNumber =
@@ -134,19 +146,26 @@ class MovieProvider with ChangeNotifier {
     if (!_hasMore) return;
 
     try {
-      final currentMovie = await apiService.fetchMovies(
-          MovieConstant.apiKey, debouncedCurrentPageNumber);
+      final apiKey = dotenv.env['TMDB_API_READ_KEY'];
 
-      if (currentMovie != null && currentMovie.isEmpty) {
+      if (apiKey == null) return;
+
+      final response = await apiService.fetchMovies(
+        apiKey,
+        debouncedCurrentPageNumber,
+        'en-US',
+      );
+      final currentMovie = response.data;
+
+      if (currentMovie.isEmpty) {
         _hasMore = false;
       } else if (currentMovie.isListEmptyOrNull()) {
-        _totalDebouncedMovies.addAll(currentMovie!);
+        _totalDebouncedMovies.addAll(currentMovie);
       }
 
       debouncedCurrentPageNumber =
           ((int.tryParse(debouncedCurrentPageNumber) ?? 0) + 1).toString();
     } catch (e) {
-      hasError = true;
       print(e.toString());
     }
 

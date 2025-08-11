@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/presentation/screens/error_page.dart';
 import 'package:stage_app/presentation/widgets/appbar.dart' show buildAppBar;
+import 'package:stage_app/utils/enum.dart';
 
 import '../../core/connectivity_service.dart';
 import '../../utils/constants.dart';
@@ -20,6 +21,9 @@ class MovieCatalogHomePage extends StatefulWidget {
 
 class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
   late ScrollController _controller;
+  final TextEditingController _textController = TextEditingController();
+  bool isLocalSearch = false;
+  String _searchMode = SearchType.local.name;
 
   @override
   void initState() {
@@ -39,9 +43,11 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
       (_) async {
         ConnectivityService().startListening();
         final provider = Provider.of<MovieProvider>(context, listen: false);
+        _textController.text = provider.getSearchQuery;
         await provider.fetchMovies();
+
         provider.setSearchQuery('');
-        _controller.addListener(() {
+        _controller.addListener(() async {
           if (_controller.position.pixels ==
                   _controller.position.maxScrollExtent &&
               !provider.isLoading) {
@@ -68,18 +74,6 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
               if (needToShowNetworkSnackBar) {
                 internetStatusSnackbar();
               }
-
-              // if (isNetworkAvailable.value == false) {
-              //   return const Center(
-              //     child: Text(
-              //       'You are Offline!',
-              //       style: TextStyle(
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   );
-              // }
               // Api error handling
               if (movieProvider.hasError) {
                 return ErrorPage(
@@ -87,7 +81,7 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                     movieProvider.fetchMovies();
                   },
                 );
-              } else if (movieProvider.isLoading) {
+              } else if (movieProvider.isLoading && movieProvider.getMovies.isEmpty ) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -97,21 +91,69 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                   /// Search bar
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        context.push(NavigationPaths.debouncedSearchedMoies);
-                      },
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: movieProvider.getSearchQuery,
-                          ),
-                          decoration: _textFieldDecoration(),
-                          onChanged: movieProvider.setSearchQuery,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _searchMode == SearchType.local.name
+                              ? TextFormField(
+                                  controller: _textController,
+                                  decoration: _textFieldDecoration(
+                                    hintText: 'Search Loacl Movie...',
+                                  ),
+                                  onChanged: movieProvider.setSearchQuery,
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                        NavigationPaths.debouncedSearchedMoies);
+                                  },
+                                  child: AbsorbPointer(
+                                    child: TextFormField(
+                                      decoration: _textFieldDecoration(
+                                        hintText: 'Search Network Movie...',
+                                      ),
+                                    ),
+                                  ),
+                                ),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _searchMode,
+                              icon: const Icon(Icons.arrow_drop_down,
+                                  color: Colors.grey),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 12),
+                              items: [
+                                DropdownMenuItem(
+                                  value: SearchType.local.name,
+                                  child: const Text("Local"),
+                                ),
+                                DropdownMenuItem(
+                                  value: SearchType.network.name,
+                                  child: const Text("Network"),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() => _searchMode = value);
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
+
                   if (movieProvider.getMovies.isEmpty)
                     Expanded(
                       child: Center(
@@ -175,16 +217,16 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
     );
   }
 
-  InputDecoration _textFieldDecoration() {
-    return const InputDecoration(
-      hintText: MovieConstant.searchMoviesHintText,
-      prefixIcon: Icon(Icons.search),
-      border: OutlineInputBorder(
+  InputDecoration _textFieldDecoration({String? hintText}) {
+    return InputDecoration(
+      hintText: hintText ?? MovieConstant.searchMoviesHintText,
+      prefixIcon: const Icon(Icons.search),
+      border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(24),
         ),
       ),
-      contentPadding: EdgeInsets.symmetric(vertical: 12.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
     );
   }
 

@@ -99,7 +99,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   InputDecoration _textFieldDecoration() {
     return const InputDecoration(
-      hintText: MovieConstant.searchMoviesHintText,
+      hintText: 'Search Saved Movies...',
       prefixIcon: Icon(Icons.search),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(

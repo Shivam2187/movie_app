@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/core/local_storage.dart';
 import 'package:stage_app/core/locator.dart';
@@ -16,7 +17,7 @@ void main() async {
   DependencyInjection().setupLocator();
 
   ConnectivityService().checkConnectivity();
-
+  await dotenv.load();
   runApp(const MyApp());
 }
 

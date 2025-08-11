@@ -164,8 +164,8 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       title: json['title'] as String?,
       video: json['video'] as bool?,
       voteAverage: (json['vote_average'] as num?)?.toDouble(),
-      voteCount: (json['vote_count'] as num?)?.toInt(),
-      isBookmark: json['isFavorite'] as bool? ?? false,
+      voteCount: (json['vote_countd'] as num?)?.toInt(),
+      isBookmark: json['isBookmark'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
@@ -182,6 +182,6 @@ Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
       'title': instance.title,
       'video': instance.video,
       'vote_average': instance.voteAverage,
-      'vote_count': instance.voteCount,
-      'isFavorite': instance.isBookmark,
+      'vote_countd': instance.voteCount,
+      'isBookmark': instance.isBookmark,
     };
