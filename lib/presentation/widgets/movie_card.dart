@@ -10,12 +10,14 @@ class MovieCard extends StatelessWidget {
   final Movie movie;
   final void Function() onPressed;
   final bool isBookmarked;
+  final bool isBookmarkIconVisible;
 
   const MovieCard({
     super.key,
     required this.movie,
     required this.onPressed,
     this.isBookmarked = false,
+    this.isBookmarkIconVisible = true,
   });
 
   @override
@@ -109,15 +111,16 @@ class MovieCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  IconButton(
-                    iconSize: 24,
-                    icon: Icon(
-                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                      color: Colors.red,
+                  if (isBookmarkIconVisible)
+                    IconButton(
+                      iconSize: 24,
+                      icon: Icon(
+                        isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: onPressed,
+                      //,
                     ),
-                    onPressed: onPressed,
-                    //,
-                  ),
                 ],
               ),
             ),

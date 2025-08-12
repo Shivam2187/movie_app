@@ -217,6 +217,16 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                       },
                     ),
                   ),
+                  if (!movieProvider.hasMoviesMore)
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'No More Movies...',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    )
                 ],
               );
             },

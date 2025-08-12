@@ -145,6 +145,7 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
                         movie: movie,
                         onPressed: () => movieProvider.toggleBookmark(movie.id),
                         isBookmarked: movieProvider.isBookmark(movie.id),
+                        isBookmarkIconVisible: false,
                       );
                     } else {
                       // Loader at the bottom
@@ -158,6 +159,16 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
                   },
                 ),
               ),
+              if (!movieProvider.hasDebouncedMoviesMore)
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'No More Movies...',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                )
             ],
           );
         },
