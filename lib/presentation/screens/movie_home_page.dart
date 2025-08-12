@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stage_app/core/connectivity_service.dart';
 import 'package:stage_app/presentation/widgets/now_playing_movies_tab.dart';
 
 import 'package:stage_app/presentation/widgets/trending_movies_tab.dart';
@@ -20,12 +21,15 @@ class _MovieHomePageState extends State<MovieHomePage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ConnectivityService().startListening();
+    });
     _tabController = TabController(length: tabWidgets.length, vsync: this);
   }
 
   @override
   void dispose() {
+    ConnectivityService().dispose();
     _tabController.dispose();
     super.dispose();
   }
