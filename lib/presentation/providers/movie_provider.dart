@@ -91,8 +91,8 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Adding and removing movie from Bookmark list
-  Future<void> toggleBookmark(int id) async {
-    await LocalStorage.toggleBookmark(id);
+  Future<void> toggleBookmark(Movie movie) async {
+    await LocalStorage.toggleBookmark(movie);
     notifyListeners();
   }
 

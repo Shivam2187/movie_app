@@ -33,8 +33,7 @@ class FavouriteScreen extends StatelessWidget {
                       final movie = favoriteProvider.getBookmarkMovies[index];
                       return MovieCard(
                         movie: movie,
-                        onPressed: () =>
-                            favoriteProvider.toggleBookmark(movie.id),
+                        onPressed: () => favoriteProvider.toggleBookmark(movie),
                         isBookmarked: favoriteProvider.isBookmark(movie.id),
                       );
                     },

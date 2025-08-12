@@ -59,7 +59,7 @@ class _TrendingMoviesTabState extends State<TrendingMoviesTab> {
               return MovieCard(
                 movie: movie,
                 onPressed: () {
-                  provider.toggleBookmark(movie.id);
+                  provider.toggleBookmark(movie);
                 },
                 isBookmarked: provider.isBookmark(movie.id),
               );

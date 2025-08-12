@@ -198,7 +198,7 @@ class _NowPlayingMoviesTabState extends State<NowPlayingMoviesTab> {
                           return MovieCard(
                             movie: movie,
                             onPressed: () =>
-                                movieProvider.toggleBookmark(movie.id),
+                                movieProvider.toggleBookmark(movie),
                             isBookmarked: movieProvider.isBookmark(movie.id),
                           );
                         } else {

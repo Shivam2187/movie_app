@@ -15,6 +15,8 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
+  final TextEditingController _textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         final provider = Provider.of<MovieProvider>(context, listen: false);
+        _textController.text = provider.getBookmarkSearchQuery;
         provider.setBookmarkSearchQuery('');
       },
     );
@@ -47,8 +50,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: TextEditingController(
-                      text: provider.getBookmarkSearchQuery),
+                  controller: _textController,
                   decoration: _textFieldDecoration(),
                   onChanged: provider.setBookmarkSearchQuery,
                 ),
@@ -85,7 +87,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
                     return MovieCard(
                       movie: movie,
-                      onPressed: () => provider.toggleBookmark(movie.id),
+                      onPressed: () => provider.toggleBookmark(movie),
                       isBookmarked: provider.isBookmark(movie.id),
                     );
                   },

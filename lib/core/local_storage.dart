@@ -23,13 +23,16 @@ class LocalStorage {
     return resultList;
   }
 
-  static Future<void> toggleBookmark(int id) async {
-    final currentMovie = movieBox.get(id);
+  static Future<void> toggleBookmark(Movie movie) async {
+    addAllMovies([movie]);
+    final currentMovie = movieBox.get(movie.id);
     if (currentMovie == null) return;
+
     final bookmarkStatus = currentMovie.isBookmark;
     final updatedMovie =
         currentMovie.copyWith(isBookmark: bookmarkStatus ? false : true);
-    await movieBox.put(id, updatedMovie); // Overwrites the old movie
+    await movieBox.put(
+        currentMovie.id, updatedMovie); // Overwrites the old movie
   }
 
   // Add multiple movies at once
