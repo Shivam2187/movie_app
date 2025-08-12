@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/presentation/providers/movie_provider.dart';
-import 'package:stage_app/presentation/widgets/movie_card.dart';
-import 'package:stage_app/utils/constants.dart';
+import 'package:movie_app/presentation/providers/movie_provider.dart';
+import 'package:movie_app/presentation/widgets/movie_card.dart';
+import 'package:movie_app/utils/constants.dart';
 
 class DebouncedSearchedMoies extends StatefulWidget {
   const DebouncedSearchedMoies({

@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:stage_app/core/api_service.dart';
-import 'package:stage_app/data/models/movie.dart';
-import 'package:stage_app/utils/constants.dart';
+import 'package:movie_app/core/api_service.dart';
+import 'package:movie_app/data/models/movie.dart';
+import 'package:movie_app/utils/constants.dart';
 
 import '../../core/local_storage.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/core/local_storage.dart';
-import 'package:stage_app/core/locator.dart';
+import 'package:movie_app/core/local_storage.dart';
+import 'package:movie_app/core/locator.dart';
 
 import 'core/connectivity_service.dart';
 import 'presentation/providers/movie_provider.dart';

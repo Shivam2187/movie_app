@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
-import 'package:stage_app/presentation/screens/bookmark_page.dart';
-import 'package:stage_app/presentation/screens/debounced_searched_moies.dart'
+import 'package:movie_app/presentation/screens/bookmark_page.dart';
+import 'package:movie_app/presentation/screens/debounced_searched_moies.dart'
     show DebouncedSearchedMoies;
-import 'package:stage_app/presentation/screens/favourite_page.dart';
-import 'package:stage_app/presentation/screens/movie_home_page.dart';
-import 'package:stage_app/utils/constants.dart';
+import 'package:movie_app/presentation/screens/favourite_page.dart';
+import 'package:movie_app/presentation/screens/movie_home_page.dart';
+import 'package:movie_app/utils/constants.dart';
 
 import '../data/models/movie.dart';
 import '../presentation/screens/error_page.dart';

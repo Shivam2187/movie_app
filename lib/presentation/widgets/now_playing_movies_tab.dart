@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/presentation/screens/error_page.dart';
-import 'package:stage_app/utils/enum.dart';
+import 'package:movie_app/presentation/screens/error_page.dart';
+import 'package:movie_app/utils/enum.dart';
 
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';

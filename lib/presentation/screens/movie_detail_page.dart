@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:stage_app/data/models/movie.dart';
-import 'package:stage_app/presentation/widgets/appbar.dart';
-import 'package:stage_app/utils/generes.dart';
+import 'package:movie_app/data/models/movie.dart';
+import 'package:movie_app/presentation/widgets/appbar.dart';
+import 'package:movie_app/utils/generes.dart';
 
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';

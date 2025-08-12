@@ -1,6 +1,6 @@
 // import 'package:flutter_test/flutter_test.dart';
-// import 'package:stage_app/data/models/movie.dart';
-// import 'package:stage_app/presentation/providers/provider.dart';
+// import 'package:movie_app/data/models/movie.dart';
+// import 'package:movie_app/presentation/providers/provider.dart';
 
 // void main() {
 //   late MovieProvider favoriteMoviesProvider;

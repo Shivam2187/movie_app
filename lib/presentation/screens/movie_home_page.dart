@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stage_app/core/connectivity_service.dart';
-import 'package:stage_app/presentation/widgets/now_playing_movies_tab.dart';
+import 'package:movie_app/core/connectivity_service.dart';
+import 'package:movie_app/presentation/widgets/now_playing_movies_tab.dart';
 
-import 'package:stage_app/presentation/widgets/trending_movies_tab.dart';
-import 'package:stage_app/presentation/widgets/movie_dashboard_appbar.dart';
+import 'package:movie_app/presentation/widgets/trending_movies_tab.dart';
+import 'package:movie_app/presentation/widgets/movie_dashboard_appbar.dart';
 
 class MovieHomePage extends StatefulWidget {
   const MovieHomePage({

@@ -1,4 +1,4 @@
-import 'package:stage_app/data/models/movie.dart';
+import 'package:movie_app/data/models/movie.dart';
 
 class NavigationPaths {
   static const errorScreen = '/errorScreen';
