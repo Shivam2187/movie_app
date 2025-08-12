@@ -13,9 +13,9 @@ Movie App is a Flutter-based mobile application that provides a seamless movie b
 ✅ **Favorites Management** – Save and remove movies from favorites using `Hive`.  
 ✅ **Offline Handling** – Uses `connectivity_plus` to detect network status and navigate accordingly.  
 ✅ **Navigation** – Powered by `go_router` for efficient routing.  
-✅ **State Management** – Uses `flutter_riverpod` and `provider`.
-✅ **Network call - `retrofit`, & `Dio`
-✅ ** To secure the Api key- `flutter_dotenv`
+✅ **State Management** – Uses `flutter_riverpod` and `provider`.  
+✅ **Network call - `retrofit`, & `Dio`.  
+✅ ** To secure the Api key- `flutter_dotenv`.  
 
 
 ## 🚀 Getting Started
