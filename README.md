@@ -4,7 +4,7 @@
 ## '''Used Flutter Clean Architecture'''
 
 ## 📌 Overview
-Stage App is a Flutter-based mobile application that provides a seamless movie browsing experience. It leverages `Provider` for state management, `Dio` for API interactions, and `Hive` for local storage. The app features **GoRouter-based navigation**, **search functionality**, and **connectivity handling**.
+Movie App is a Flutter-based mobile application that provides a seamless movie browsing experience. It leverages `Provider` for state management, `Dio`  & `retrofitfor`  API interactions, and `Hive` for local storage. The app features **GoRouter-based navigation**, **search functionality**, and **connectivity handling**.
 
 ## ✨ Features
 ✅ **Pagination** – Loads data in smaller chunks (pages) to improve performance and user experience.  
@@ -13,13 +13,15 @@ Stage App is a Flutter-based mobile application that provides a seamless movie b
 ✅ **Favorites Management** – Save and remove movies from favorites using `Hive`.  
 ✅ **Offline Handling** – Uses `connectivity_plus` to detect network status and navigate accordingly.  
 ✅ **Navigation** – Powered by `go_router` for efficient routing.  
-✅ **State Management** – Uses `flutter_riverpod` and `provider`.  
+✅ **State Management** – Uses `flutter_riverpod` and `provider`.
+✅ **Network call - `retrofit`, & `Dio`
+✅ ** To secure the Api key- `flutter_dotenv`
+
 
 ## 🚀 Getting Started
 
 ### 1️⃣ Prerequisites
-- **Flutter SDK**: `>=3.3.4`
-- **Dart**: `>=3.0.0`
+- **Flutter SDK**: `3.32.8`
 - Android Emulator / iOS Simulator / Physical Device
 ## Dependencies:
 #### dio: ^5.4.0
@@ -32,3 +34,5 @@ Stage App is a Flutter-based mobile application that provides a seamless movie b
 ####  mockito: ^5.4.4
 ####  provider: ^6.1.2
 ####  get_it: ^8.0.3
+####  retrofit: ^4.7.1
+####  flutter_dotenv: ^5.2.1
