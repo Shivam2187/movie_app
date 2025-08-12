@@ -78,7 +78,7 @@ class _NowPlayingMoviesTabState extends State<NowPlayingMoviesTab> {
                 internetStatusSnackbar();
               }
               // Api error handling
-              if (movieProvider.hasError) {
+              if (movieProvider.hasError && movieProvider.getMovies.isEmpty) {
                 return ErrorPage(
                   onPressed: () {
                     movieProvider.fetchNowPlayingMovie();

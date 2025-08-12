@@ -195,6 +195,11 @@ class MovieProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearDebouncedMovies() {
+    _totalDebouncedMovies.clear();
+    notifyListeners();
+  }
+
   /// Get Trending Movies
   Future<void> fetchTrendingMovie() async {
     try {

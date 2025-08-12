@@ -54,6 +54,9 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
   }
 
   void _onSearchChanged(String query) {
+    final provider = Provider.of<MovieProvider>(context, listen: false);
+    provider.clearDebouncedMovies();
+
     if (query.length < 3) return;
     setState(() {
       isDebounceSearchActive = true;
@@ -158,7 +161,8 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
                   },
                 ),
               ),
-              if (!movieProvider.hasDebouncedMoviesMore)
+              if (!movieProvider.hasDebouncedMoviesMore &&
+                  movieProvider.getDebouncedSearchQuery.length > 2)
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
