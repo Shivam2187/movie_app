@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/data/models/movie.dart';
 import 'package:stage_app/presentation/widgets/appbar.dart';
+import 'package:stage_app/utils/generes.dart';
 
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';
@@ -91,20 +92,17 @@ class MovieDetailScreen extends StatelessWidget {
               child: Text(movie.overview ?? '',
                   style: const TextStyle(color: Colors.black)),
             ),
-            const Divider(
-              thickness: 2,
-            ),
             const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                MovieConstant.trailers,
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 20,
-                ),
-              ),
-            )
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16),
+            //   child: Text(
+            //     MovieConstant.trailers,
+            //     style: TextStyle(
+            //       color: Colors.red,
+            //       fontSize: 20,
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -137,29 +135,43 @@ class MovieImageWithRating extends StatelessWidget {
               ),
               onPressed: () => provider.toggleBookmark(movie),
             ),
-            const SizedBox(width: 24),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  movie.title ?? '',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+            const SizedBox(width: 32),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    movie.title ?? '',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(movie.releaseDate ?? '',
-                    style: const TextStyle(color: Colors.black)),
-                Row(
-                  children: [
-                    Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
-                        style: const TextStyle(color: Colors.black)),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.star, size: 20),
-                  ],
-                ),
-              ],
+                  Text(movie.releaseDate ?? '',
+                      style: const TextStyle(color: Colors.black)),
+                  Row(
+                    children: [
+                      Text(movie.voteAverage?.toStringAsPrecision(2) ?? '',
+                          style: const TextStyle(color: Colors.black)),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.star, size: 20),
+                    ],
+                  ),
+                  if (movie.genreIds?.isNotEmpty ?? false)
+                    Wrap(
+                      children: genreNames(movie.genreIds ?? [])
+                          .map((name) => Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Chip(
+                                  label: Text(name),
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ))
+                          .toList(),
+                    )
+                ],
+              ),
             ),
           ],
         ),

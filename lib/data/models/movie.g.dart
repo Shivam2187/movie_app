@@ -151,7 +151,7 @@ Map<String, dynamic> _$MovieResponseToJson(MovieResponse instance) =>
 Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       adult: json['adult'] as bool?,
       backdropPath: json['backdrop_path'] as String?,
-      genreIds: (json['genreIds'] as List<dynamic>?)
+      genreIds: (json['genre_ids'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList(),
       id: (json['id'] as num).toInt(),
@@ -171,7 +171,7 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
 Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
       'adult': instance.adult,
       'backdrop_path': instance.backdropPath,
-      'genreIds': instance.genreIds,
+      'genre_ids': instance.genreIds,
       'id': instance.id,
       'original_language': instance.originalLanguage,
       'original_title': instance.originalTitle,

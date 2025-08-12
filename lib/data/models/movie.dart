@@ -40,6 +40,7 @@ class Movie extends HiveObject {
   @HiveField(1)
   String? backdropPath;
 
+  @JsonKey(name: 'genre_ids')
   @HiveField(2)
   List<int>? genreIds;
 
