@@ -3,12 +3,12 @@ import 'package:stage_app/presentation/screens/bookmark_page.dart';
 import 'package:stage_app/presentation/screens/debounced_searched_moies.dart'
     show DebouncedSearchedMoies;
 import 'package:stage_app/presentation/screens/favourite_page.dart';
+import 'package:stage_app/presentation/screens/movie_home_page.dart';
 import 'package:stage_app/utils/constants.dart';
 
 import '../data/models/movie.dart';
 import '../presentation/screens/error_page.dart';
 import '../presentation/screens/movie_detail_page.dart';
-import '../presentation/screens/movie_catalog_home_page.dart';
 
 final routeConfig = GoRouter(
   initialLocation: '/',
@@ -16,7 +16,7 @@ final routeConfig = GoRouter(
     GoRoute(
       name: 'home',
       path: '/',
-      builder: (context, state) => const MovieCatalogHomePage(),
+      builder: (context, state) => const MovieHomePage(),
     ),
     GoRoute(
       name: 'Movie Details Screen',

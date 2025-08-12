@@ -24,7 +24,7 @@ class _ApiService implements ApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> fetchMovies(
+  Future<HttpResponse<dynamic>> fetchNowPlayingMovies(
     String apiKey,
     String page,
     String language,
@@ -44,7 +44,39 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          '/movie/popular',
+          '/movie/now_playing',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> fetchTrendingMovie(
+    String apiKey,
+    String language,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'language': language};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/trending/movie/day',
           queryParameters: queryParameters,
           data: _data,
         )

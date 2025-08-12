@@ -2,24 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:stage_app/presentation/screens/error_page.dart';
-import 'package:stage_app/presentation/widgets/appbar.dart' show buildAppBar;
 import 'package:stage_app/utils/enum.dart';
 
-import '../../core/connectivity_service.dart';
 import '../../utils/constants.dart';
 import '../providers/movie_provider.dart';
-import '../widgets/movie_card.dart';
+import 'movie_card.dart';
 
-class MovieCatalogHomePage extends StatefulWidget {
-  const MovieCatalogHomePage({
+class NowPlayingMoviesTab extends StatefulWidget {
+  const NowPlayingMoviesTab({
     super.key,
   });
 
   @override
-  State<MovieCatalogHomePage> createState() => _MovieCatalogHomePageState();
+  State<NowPlayingMoviesTab> createState() => _NowPlayingMoviesTabState();
 }
 
-class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
+class _NowPlayingMoviesTabState extends State<NowPlayingMoviesTab> {
   late ScrollController _controller;
   final TextEditingController _textController = TextEditingController();
   bool isLocalSearch = false;
@@ -34,21 +32,19 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
 
   @override
   void dispose() {
-    ConnectivityService().dispose();
     super.dispose();
   }
 
   void inIt() {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        ConnectivityService().startListening();
         final provider = Provider.of<MovieProvider>(context, listen: false);
         _textController.text = provider.getSearchQuery;
         provider.setSearchQuery('');
 
         ///get first local DB movies
         await provider.setInitialTotalMovies();
-        await provider.fetchMovies();
+        await provider.fetchNowPlayingMovie();
 
         _controller.addListener(() async {
           /// while search operation api call will be block
@@ -58,7 +54,7 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                   _controller.position.maxScrollExtent - 100 &&
               !provider.isLoading &&
               provider.hasMoviesMore) {
-            provider.fetchMovies();
+            provider.fetchNowPlayingMovie();
           }
         });
       },
@@ -72,10 +68,10 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
       builder: (context, hasError, child) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: buildAppBar(
-            context: context,
-            title: MovieConstant.movieScreenAppbarTiltle,
-          ),
+          // appBar: buildAppBar(
+          //   context: context,
+          //   title: MovieConstant.movieScreenAppbarTiltle,
+          // ),
           body: Consumer<MovieProvider>(
             builder: (context, movieProvider, child) {
               if (needToShowNetworkSnackBar) {
@@ -85,7 +81,7 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
               if (movieProvider.hasError) {
                 return ErrorPage(
                   onPressed: () {
-                    movieProvider.fetchMovies();
+                    movieProvider.fetchNowPlayingMovie();
                   },
                 );
               } else if (movieProvider.isLoading &&

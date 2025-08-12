@@ -22,6 +22,7 @@ class MovieProvider with ChangeNotifier {
   }
 
   List<Movie> totalMovies = [];
+  List<Movie> trendingMovies = [];
 
   String _searchQuery = '';
   String get getSearchQuery => _searchQuery;
@@ -71,7 +72,6 @@ class MovieProvider with ChangeNotifier {
 
   /// Set Data form Local DB to totalMovies
   Future<void> setInitialTotalMovies() async {
-    await LocalStorage.clearAllMoviesFromLocalDB();
     totalMovies = LocalStorage.getAllMovies();
   }
 
@@ -102,7 +102,7 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Pagination Logic :-
-  Future<void> fetchMovies() async {
+  Future<void> fetchNowPlayingMovie() async {
     isLoading = true;
     hasError = false;
     notifyListeners();
@@ -112,7 +112,7 @@ class MovieProvider with ChangeNotifier {
 
       if (apiKey == null || !hasMoviesMore) return;
 
-      final response = await apiService.fetchMovies(
+      final response = await apiService.fetchNowPlayingMovies(
         'Bearer $apiKey',
         currentPageNumber,
         'en-US',
@@ -193,5 +193,28 @@ class MovieProvider with ChangeNotifier {
     }
     isDebouncedLoading = false;
     notifyListeners();
+  }
+
+  /// Get Trending Movies
+  Future<void> fetchTrendingMovie() async {
+    try {
+      final apiKey = dotenv.env['TMDB_API_READ_KEY'];
+
+      if (apiKey == null || !hasMoviesMore) return;
+
+      final response = await apiService.fetchTrendingMovie(
+        'Bearer $apiKey',
+        'en-US',
+      );
+
+      final data = response.data;
+      final movieResponse = MovieResponse.fromJson(data);
+      final currentPageMovie = movieResponse.results;
+
+      trendingMovies.addAll(currentPageMovie);
+      LocalStorage.addAllMovies(currentPageMovie);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
