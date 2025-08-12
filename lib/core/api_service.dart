@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:stage_app/data/models/movie.dart';
 
 part 'api_service.g.dart'; // generated file
 

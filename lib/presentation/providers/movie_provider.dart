@@ -21,8 +21,8 @@ class MovieProvider with ChangeNotifier {
     apiService = ApiService(dio);
   }
 
-  /// Get Data form Local DB
-  List<Movie> get _getTotalLoadedMovies => LocalStorage.getAllMovies();
+  List<Movie> totalMovies = [];
+
   String _searchQuery = '';
   String get getSearchQuery => _searchQuery;
 
@@ -39,13 +39,14 @@ class MovieProvider with ChangeNotifier {
 
   bool isLoading = false;
   bool hasError = false;
-  bool _hasMore = true;
+  bool hasMoviesMore = true;
+  bool hasDebouncedMoviesMore = true;
 
   String currentPageNumber = '1';
 
   List<Movie> get getMovies => _searchQuery.isEmpty
-      ? _getTotalLoadedMovies
-      : _getTotalLoadedMovies.where(
+      ? totalMovies
+      : totalMovies.where(
           (movie) {
             if (movie.title == null) {
               return false;
@@ -67,6 +68,12 @@ class MovieProvider with ChangeNotifier {
         },
       ).toList();
 
+  /// Set Data form Local DB to totalMovies
+  Future<void> setInitialTotalMovies() async {
+    await LocalStorage.clearAllMoviesFromLocalDB();
+    totalMovies = LocalStorage.getAllMovies();
+  }
+
   void setSearchQuery(String query) {
     _searchQuery = query.trim();
     notifyListeners();
@@ -83,12 +90,8 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Adding and removing movie from Bookmark list
-  Future<void> toggleBookmark(Movie movie) async {
-    if (movie.isBookmark) {
-      await LocalStorage.removeBookmark(movie.id);
-    } else {
-      await LocalStorage.saveBookmark(movie.id);
-    }
+  Future<void> toggleBookmark(int id) async {
+    await LocalStorage.toggleBookmark(id);
     notifyListeners();
   }
 
@@ -98,7 +101,6 @@ class MovieProvider with ChangeNotifier {
   }
 
   /// Pagination Logic :-
-
   Future<void> fetchMovies() async {
     isLoading = true;
     hasError = false;
@@ -107,7 +109,7 @@ class MovieProvider with ChangeNotifier {
     try {
       final apiKey = dotenv.env['TMDB_API_READ_KEY'];
 
-      if (apiKey == null) return;
+      if (apiKey == null || !hasMoviesMore) return;
 
       final response = await apiService.fetchMovies(
         'Bearer $apiKey',
@@ -118,9 +120,11 @@ class MovieProvider with ChangeNotifier {
       final data = response.data;
       final movieResponse = MovieResponse.fromJson(data);
       final currentPageMovie = movieResponse.results;
-
-      if (currentPageMovie.isListNotEmptyOrNull()) {
-        await LocalStorage.addAllMovies(currentPageMovie);
+      if (currentPageMovie.isEmpty) {
+        hasMoviesMore = false;
+      } else if (currentPageMovie.isListNotEmptyOrNull()) {
+        addUniqueMovies(currentPageMovie);
+        LocalStorage.addAllMovies(currentPageMovie);
       }
 
       currentPageNumber =
@@ -134,6 +138,17 @@ class MovieProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void addUniqueMovies(List<Movie> newMovies) {
+    for (int i = 0; i < newMovies.length; i++) {
+      final item = newMovies[i];
+
+      final exists = totalMovies.any((e) => e.id == item.id);
+      if (!exists) {
+        totalMovies.add(item);
+      }
+    }
+  }
+
   Future<void> fetchDebouncedSearchMovies({
     bool reset = false,
   }) async {
@@ -143,7 +158,7 @@ class MovieProvider with ChangeNotifier {
       notifyListeners();
     }
 
-    if (!_hasMore) return;
+    if (!hasDebouncedMoviesMore) return;
 
     try {
       final apiKey = dotenv.env['TMDB_API_READ_KEY'];
@@ -158,7 +173,7 @@ class MovieProvider with ChangeNotifier {
       final currentMovie = response.data;
 
       if (currentMovie.isEmpty) {
-        _hasMore = false;
+        hasDebouncedMoviesMore = false;
       } else if (currentMovie.isListEmptyOrNull()) {
         _totalDebouncedMovies.addAll(currentMovie);
       }

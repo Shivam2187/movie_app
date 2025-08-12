@@ -23,20 +23,13 @@ class LocalStorage {
     return resultList;
   }
 
-  static Future<void> saveBookmark(int id) async {
-    if (movieBox.containsKey(id)) {
-      final currentMovie = movieBox.get(id);
-      final updatedMovie = currentMovie!.copyWith(isBookmark: true);
-      await movieBox.put(id, updatedMovie); // Overwrites the old movie
-    }
-  }
-
-  static Future<void> removeBookmark(int id) async {
-    if (movieBox.containsKey(id)) {
-      final currentMovie = movieBox.get(id);
-      final updatedMovie = currentMovie!.copyWith(isBookmark: false);
-      await movieBox.put(id, updatedMovie); // Overwrites the old movie
-    }
+  static Future<void> toggleBookmark(int id) async {
+    final currentMovie = movieBox.get(id);
+    if (currentMovie == null) return;
+    final bookmarkStatus = currentMovie.isBookmark;
+    final updatedMovie =
+        currentMovie.copyWith(isBookmark: bookmarkStatus ? false : true);
+    await movieBox.put(id, updatedMovie); // Overwrites the old movie
   }
 
   // Add multiple movies at once
@@ -56,5 +49,10 @@ class LocalStorage {
   static bool isBookmark(int id) {
     final movie = movieBox.get(id);
     return movie?.isBookmark ?? false;
+  }
+
+  // remove All movies at once
+  static Future<int> clearAllMoviesFromLocalDB() async {
+    return await movieBox.clear();
   }
 }

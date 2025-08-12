@@ -135,7 +135,7 @@ class MovieImageWithRating extends StatelessWidget {
                 color: Colors.red,
                 size: 32,
               ),
-              onPressed: () => provider.toggleBookmark(movie),
+              onPressed: () => provider.toggleBookmark(movie.id),
             ),
             const SizedBox(width: 24),
             Column(

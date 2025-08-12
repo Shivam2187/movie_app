@@ -44,13 +44,20 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
         ConnectivityService().startListening();
         final provider = Provider.of<MovieProvider>(context, listen: false);
         _textController.text = provider.getSearchQuery;
+        provider.setSearchQuery('');
+
+        ///get first local DB movies
+        await provider.setInitialTotalMovies();
         await provider.fetchMovies();
 
-        provider.setSearchQuery('');
         _controller.addListener(() async {
-          if (_controller.position.pixels ==
-                  _controller.position.maxScrollExtent &&
-              !provider.isLoading) {
+          /// while search operation api call will be block
+          if (provider.getSearchQuery.trim().isNotEmpty) return;
+
+          if (_controller.position.pixels >=
+                  _controller.position.maxScrollExtent - 100 &&
+              !provider.isLoading &&
+              provider.hasMoviesMore) {
             provider.fetchMovies();
           }
         });
@@ -81,7 +88,8 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                     movieProvider.fetchMovies();
                   },
                 );
-              } else if (movieProvider.isLoading && movieProvider.getMovies.isEmpty ) {
+              } else if (movieProvider.isLoading &&
+                  movieProvider.getMovies.isEmpty) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -162,7 +170,7 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                           child: Text(
                             movieProvider.getSearchQuery.isEmpty
                                 ? MovieConstant.notMovieToDisplay
-                                : '${MovieConstant.notMatchingWithSearch} ${movieProvider.getSearchQuery}',
+                                : '${MovieConstant.notMatchingWithSearch} \' ${movieProvider.getSearchQuery} \'',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -178,19 +186,34 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: const EdgeInsets.all(8.0),
-                      itemCount: movieProvider.getMovies.length,
+                      itemCount: movieProvider.getMovies.length +
+                          (movieProvider.isLoading &&
+                                  movieProvider.getMovies.isNotEmpty
+                              ? 1
+                              : 0),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.6,
                       ),
                       itemBuilder: (context, index) {
-                        final movie = movieProvider.getMovies[index];
-
-                        return MovieCard(
-                          movie: movie,
-                          onPressed: () => movieProvider.toggleBookmark(movie),
-                        );
+                        if (index < movieProvider.getMovies.length) {
+                          final movie = movieProvider.getMovies[index];
+                          return MovieCard(
+                            movie: movie,
+                            onPressed: () =>
+                                movieProvider.toggleBookmark(movie.id),
+                            isBookmarked: movieProvider.isBookmark(movie.id),
+                          );
+                        } else {
+                          // Loader at the bottom
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),
@@ -226,7 +249,7 @@ class _MovieCatalogHomePageState extends State<MovieCatalogHomePage> {
           Radius.circular(24),
         ),
       ),
-      contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
     );
   }
 

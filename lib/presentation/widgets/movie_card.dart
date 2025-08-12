@@ -8,13 +8,14 @@ import '../providers/movie_provider.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
-
   final void Function() onPressed;
+  final bool isBookmarked;
 
   const MovieCard({
     super.key,
     required this.movie,
     required this.onPressed,
+    this.isBookmarked = false,
   });
 
   @override
@@ -111,7 +112,7 @@ class MovieCard extends StatelessWidget {
                   IconButton(
                     iconSize: 24,
                     icon: Icon(
-                      movie.isBookmark ? Icons.bookmark : Icons.bookmark_border,
+                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                       color: Colors.red,
                     ),
                     onPressed: onPressed,

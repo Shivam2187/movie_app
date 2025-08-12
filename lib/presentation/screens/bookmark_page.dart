@@ -85,7 +85,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
                     return MovieCard(
                       movie: movie,
-                      onPressed: () => provider.toggleBookmark(movie),
+                      onPressed: () => provider.toggleBookmark(movie.id),
+                      isBookmarked: provider.isBookmark(movie.id),
                     );
                   },
                 ),

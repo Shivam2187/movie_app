@@ -129,7 +129,8 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
 
                     return MovieCard(
                       movie: movie,
-                      onPressed: () => movieProvider.toggleBookmark(movie),
+                      onPressed: () => movieProvider.toggleBookmark(movie.id),
+                      isBookmarked: movieProvider.isBookmark(movie.id),
                     );
                   },
                 ),
