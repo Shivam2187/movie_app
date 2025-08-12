@@ -22,8 +22,7 @@ class MovieConstant {
   static const noInternetConnection = 'No Internet Connection';
   static const retry = 'Retry';
   static const backOnline = 'Back online';
-  static const notMatchingWithSearch =
-      'Oops! We couldn\'t find anything for search';
+  static const notMatchingWithSearch = 'Oops! Couldn\'t Find Movies for Search';
   static const notMovieToDisplay = 'Oops! No Movie To Display';
 
   static const ratingText = 'Rating : ';

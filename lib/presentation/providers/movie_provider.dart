@@ -38,6 +38,7 @@ class MovieProvider with ChangeNotifier {
   List<Movie> get _bookmarkMovies => LocalStorage.getBookmark();
 
   bool isLoading = false;
+  bool isDebouncedLoading = false;
   bool hasError = false;
   bool hasMoviesMore = true;
   bool hasDebouncedMoviesMore = true;
@@ -151,31 +152,38 @@ class MovieProvider with ChangeNotifier {
 
   Future<void> fetchDebouncedSearchMovies({
     bool reset = false,
+    required String query,
   }) async {
+    isDebouncedLoading = true;
     if (reset) {
       debouncedCurrentPageNumber = '1';
       _totalDebouncedMovies.clear();
       notifyListeners();
+      hasDebouncedMoviesMore = true;
     }
+    final apiKey = dotenv.env['TMDB_API_READ_KEY'];
 
-    if (!hasDebouncedMoviesMore) return;
+    if (apiKey == null || !hasDebouncedMoviesMore) return;
 
     try {
-      final apiKey = dotenv.env['TMDB_API_READ_KEY'];
-
-      if (apiKey == null) return;
-
-      final response = await apiService.fetchMovies(
-        apiKey,
+      final response = await apiService.fetchDebouncedSearchMovies(
+        'Bearer $apiKey',
         debouncedCurrentPageNumber,
         'en-US',
+        query.trim(),
       );
-      final currentMovie = response.data;
+      final data = response.data;
+      final movieResponse = MovieResponse.fromJson(data);
+      final currentPageMovie = movieResponse.results;
 
-      if (currentMovie.isEmpty) {
+      if (currentPageMovie.isEmpty) {
         hasDebouncedMoviesMore = false;
-      } else if (currentMovie.isListEmptyOrNull()) {
-        _totalDebouncedMovies.addAll(currentMovie);
+      } else if (currentPageMovie.isListNotEmptyOrNull()) {
+        _totalDebouncedMovies.addAll(currentPageMovie);
+      }
+
+      for (var i = 0; i < _totalDebouncedMovies.length; i++) {
+        print(_totalDebouncedMovies[i].title);
       }
 
       debouncedCurrentPageNumber =
@@ -183,7 +191,7 @@ class MovieProvider with ChangeNotifier {
     } catch (e) {
       print(e.toString());
     }
-
+    isDebouncedLoading = false;
     notifyListeners();
   }
 }

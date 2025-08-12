@@ -27,24 +27,30 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
     super.initState();
 
     _controller = ScrollController();
-    inIt();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<MovieProvider>(context, listen: false);
+      inIt(provider);
+      addListener(provider);
+    });
   }
 
-  void inIt() {
+  void inIt(MovieProvider provider) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        final provider = Provider.of<MovieProvider>(context, listen: false);
         _textController.text = provider.getDebouncedSearchQuery;
         provider.setDebouncedSearchQuery('');
-        _controller.addListener(() {
-          if (_controller.position.pixels ==
-                  _controller.position.maxScrollExtent &&
-              !provider.isLoading) {
-            provider.fetchDebouncedSearchMovies();
-          }
-        });
       },
     );
+  }
+
+  void addListener(MovieProvider provider) {
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent &&
+          !provider.isLoading) {
+        provider.fetchDebouncedSearchMovies(query: _textController.text);
+      }
+    });
   }
 
   void _onSearchChanged(String query) {
@@ -59,7 +65,10 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       final provider = Provider.of<MovieProvider>(context, listen: false);
 
-      await provider.fetchDebouncedSearchMovies(reset: true);
+      await provider.fetchDebouncedSearchMovies(
+        reset: true,
+        query: _textController.text,
+      );
       setState(() {
         isDebounceSearchActive = false;
       });
@@ -103,7 +112,7 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        '${MovieConstant.notMatchingWithSearch} ${movieProvider.getDebouncedSearchQuery}',
+                        '${MovieConstant.notMatchingWithSearch} \' ${movieProvider.getDebouncedSearchQuery} \'',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -119,19 +128,33 @@ class _DebouncedSearchedMoiesState extends State<DebouncedSearchedMoies> {
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: const EdgeInsets.all(8.0),
-                  itemCount: movieProvider.getTotalDebouncedMovies.length,
+                  itemCount: movieProvider.getTotalDebouncedMovies.length +
+                      (movieProvider.isDebouncedLoading &&
+                              movieProvider.getTotalDebouncedMovies.isNotEmpty
+                          ? 1
+                          : 0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.6,
                   ),
                   itemBuilder: (context, index) {
-                    final movie = movieProvider.getTotalDebouncedMovies[index];
-
-                    return MovieCard(
-                      movie: movie,
-                      onPressed: () => movieProvider.toggleBookmark(movie.id),
-                      isBookmarked: movieProvider.isBookmark(movie.id),
-                    );
+                    if (index < movieProvider.getTotalDebouncedMovies.length) {
+                      final movie =
+                          movieProvider.getTotalDebouncedMovies[index];
+                      return MovieCard(
+                        movie: movie,
+                        onPressed: () => movieProvider.toggleBookmark(movie.id),
+                        isBookmarked: movieProvider.isBookmark(movie.id),
+                      );
+                    } else {
+                      // Loader at the bottom
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
