@@ -43,7 +43,7 @@ class _TrendingMoviesTabState extends State<TrendingMoviesTab> {
         } else if (snapshot.hasError) {
           return ErrorWidget(snapshot.error!);
         } else if (provider.trendingMovies.isEmpty) {
-          return const Center(child: Text('No movies found'));
+          return const Center(child: Text('No movies found!'));
         }
         return GridView.builder(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
