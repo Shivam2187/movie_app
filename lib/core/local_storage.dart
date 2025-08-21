@@ -7,7 +7,7 @@ class LocalStorage {
   static Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(MovieAdapter());
-    movieBox = await Hive.openBox<Movie>('favorites');
+    movieBox = await Hive.openBox<Movie>('movies');
   }
 
   static List<Movie> getBookmark() {
