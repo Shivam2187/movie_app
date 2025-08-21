@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/core/connectivity_service.dart';
+import 'package:movie_app/presentation/providers/movie_provider.dart';
 import 'package:movie_app/presentation/widgets/now_playing_movies_tab.dart';
 
 import 'package:movie_app/presentation/widgets/trending_movies_tab.dart';
 import 'package:movie_app/presentation/widgets/movie_dashboard_appbar.dart';
+import 'package:provider/provider.dart';
 
 class MovieHomePage extends StatefulWidget {
   const MovieHomePage({
@@ -22,14 +24,18 @@ class _MovieHomePageState extends State<MovieHomePage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ConnectivityService().startListening();
+      final provider = Provider.of<MovieProvider>(context, listen: false);
+
+      ///set all Local DB movies to  totalMovies List(Display)
+      provider.setInitialTotalMovies();
+      ConnectivityService.instance.startListening();
     });
     _tabController = TabController(length: tabWidgets.length, vsync: this);
   }
 
   @override
   void dispose() {
-    ConnectivityService().dispose();
+    ConnectivityService.instance.dispose();
     _tabController.dispose();
     super.dispose();
   }

@@ -5,11 +5,11 @@ import '../presentation/providers/movie_provider.dart';
 
 class ConnectivityService {
   static final ConnectivityService _instance = ConnectivityService._internal();
-  factory ConnectivityService() => _instance;
-
-  late StreamSubscription<ConnectivityResult> _subscription;
 
   ConnectivityService._internal();
+  static ConnectivityService get instance => _instance;
+
+  late StreamSubscription<ConnectivityResult> _subscription;
 
   void startListening() {
     _subscription = Connectivity()

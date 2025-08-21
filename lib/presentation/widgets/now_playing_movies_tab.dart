@@ -42,10 +42,10 @@ class _NowPlayingMoviesTabState extends State<NowPlayingMoviesTab> {
         _textController.text = provider.getSearchQuery;
         provider.setSearchQuery('');
 
-        ///get first local DB movies
-        await provider.setInitialTotalMovies();
-        await provider.fetchNowPlayingMovie();
-
+        /// only call API when no movie present to display
+        if (provider.totalMovies.isEmpty) {
+          await provider.fetchNowPlayingMovie();
+        }
         _controller.addListener(() async {
           /// while search operation api call will be block
           if (provider.getSearchQuery.trim().isNotEmpty) return;

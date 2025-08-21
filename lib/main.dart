@@ -16,7 +16,7 @@ void main() async {
 
   DependencyInjection().setupLocator();
 
-  ConnectivityService().checkConnectivity();
+  ConnectivityService.instance.checkConnectivity();
   await dotenv.load();
   runApp(const MyApp());
 }
