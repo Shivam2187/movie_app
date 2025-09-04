@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app/presentation/screens/bookmark_page.dart';
 import 'package:movie_app/presentation/screens/debounced_searched_moies.dart'
@@ -10,8 +11,11 @@ import '../data/models/movie.dart';
 import '../presentation/screens/error_page.dart';
 import '../presentation/screens/movie_detail_page.dart';
 
+final navigationKey = GlobalKey<NavigatorState>(); //context less navigation
+
 final routeConfig = GoRouter(
   initialLocation: '/',
+  navigatorKey: navigationKey,
   routes: [
     GoRoute(
       name: 'home',
@@ -45,6 +49,11 @@ final routeConfig = GoRouter(
       name: 'DebouncedSearchedMoies',
       path: NavigationPaths.debouncedSearchedMoies,
       builder: (context, state) => const DebouncedSearchedMoies(),
+    ),
+    GoRoute(
+      name: 'test Page',
+      path: '/testPage',
+      builder: (context, state) => const Center(child: Text('Test Page')),
     ),
   ],
 );
